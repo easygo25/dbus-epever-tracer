@@ -47,7 +47,7 @@ if len(sys.argv) > 1:
 else:
     sys.exit()
 
-#controller = minimalmodbus.Instrument('/dev/ttyUSB0', 1)
+controller = minimalmodbus.Instrument('/dev/ttyUSB0', 1)
 controller.serial.baudrate = 115200
 controller.serial.bytesize = 8
 controller.serial.parity = serial.PARITY_NONE
@@ -102,20 +102,20 @@ class DbusEpever(object):
         self._dbusservice.add_path('/Pv/V', None, gettextcallback=_v)
         self._dbusservice.add_path('/Yield/Power', None, gettextcallback=_w)
         self._dbusservice.add_path('/Yield/User', None, gettextcallback=_kwh)
+        self._dbusservice.add_path('/Yield/System', None, gettextcallback=_kwh)
         self._dbusservice.add_path('/Load/State',None, writeable=True)
         self._dbusservice.add_path('/Load/I',None, gettextcallback=_a)
         self._dbusservice.add_path('/ErrorCode',0)
-     
 
         self._dbusservice.add_path('/History/Daily/0/Yield', 0)
         self._dbusservice.add_path('/History/Daily/0/MaxPower',0)
         self._dbusservice.add_path('/History/Daily/1/Yield', 0)
         self._dbusservice.add_path('/History/Daily/1/MaxPower', 0)
+        #self._dbusservice.add_path('/History/Daily/0/Nr', 1)
+       
 
-        #self._dbusservice.add_path('/100/Relay/0/State', 1, writeable=True)
-        
         GLib.timeout_add(1000, self._update)
-        
+
     def _update(self):
 
         def getBit(num, i):
@@ -151,9 +151,9 @@ class DbusEpever(object):
             self._dbusservice['/Yield/System'] =(c3300[18] | c3300[19] << 8)/100
             self._dbusservice['/History/Daily/0/Yield'] =(c3300[12] | c3300[13] << 8)/100
             
-            if self._dbusservice['/Yield/Power'] > self._dbusservice['/History/Daily/0/MaxPower']:
-                self._dbusservice['/History/Daily/0/MaxPower'] = self._dbusservice['/Yield/Power']
-
+            #if self._dbusservice['/Yield/Power'] > self._dbusservice['/History/Daily/0/MaxPower']:
+            #    self._dbusservice['/History/Daily/0/MaxPower'] = self._dbusservice['/Yield/Power']
+                
         return True
 
 
