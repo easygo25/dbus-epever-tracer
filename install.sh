@@ -33,7 +33,8 @@ then
 	echo "Add entries to serial-starter"
 	cd ..
 	sed -i '/service.*imt.*dbus-imt-si-rs485tc/a service epever		dbus-epever-tracer' /etc/venus/serial-starter.conf
-	sed -i '$aACTION=="add", ENV{ID_BUS}=="usb", ENV{ID_MODEL}=="USB_Serial",          ENV{VE_SERVICE}="epever"' /etc/udev/rules.d/serial-starter.rules
+	#sed -i '$aACTION=="add", ENV{ID_BUS}=="usb", ENV{ID_MODEL}=="USB_Serial",          ENV{VE_SERVICE}="epever"' /etc/udev/rules.d/serial-starter.rules
+	sed -i '/^alias\s*default/ { s/[[:space:]]*$//; /:epever$/! s/$/:epever/ }' /etc/venus/serial-starter.conf
 
 	echo "Install driver"
 	chmod +x /data/dbus-epever-tracer/driver/start-dbus-epever-tracer.sh
