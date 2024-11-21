@@ -28,15 +28,16 @@ import serial
 sys.path.insert(1, os.path.join(os.path.dirname(__file__), '../ext/velib_python'))
 from vedbus import VeDbusService
 
-#Variablen
-softwareversion = '0.8'
-serialnumber = '0000000000000000'
-productname='TriRonXXXX'
-hardwareversion = '00.00'
-firmwareversion = '00.00'
+# Variables
+softwareversion = '0.9'
+serialnumber = '0000'
+productname = 'Epever Tracer MPPT'
+productid = 0xB001
+customname = 'PV Charger'
+firmwareversion = 'v0.3'
 connection = 'USB'
 servicename = 'com.victronenergy.solarcharger.tty'
-deviceinstance = 290    #VRM instanze
+deviceinstance = 290    #VRM instance
 exceptionCounter = 0
 state = [0,5,3,6]
 
@@ -79,13 +80,12 @@ class DbusEpever(object):
 
         # Create the mandatory objects
         self._dbusservice.add_path('/DeviceInstance', deviceinstance)
-        self._dbusservice.add_path('/ProductId', 1)
+        self._dbusservice.add_path('/ProductId', productid)
         self._dbusservice.add_path('/ProductName', productname)
         self._dbusservice.add_path('/FirmwareVersion', firmwareversion)
-        self._dbusservice.add_path('/HardwareVersion', hardwareversion)
         self._dbusservice.add_path('/Connected', 1)
         self._dbusservice.add_path('/Serial', serialnumber)
-        self._dbusservice.add_path('/CustomName', None, writeable=True)
+        self._dbusservice.add_path('/CustomName', customname, writeable=True)
 
         self._dbusservice.add_path('/Link/NetworkMode', 0)
         self._dbusservice.add_path('/Link/NetworkStatus', 4)
@@ -142,9 +142,13 @@ class DbusEpever(object):
             self._dbusservice['/Pv/V'] = c3100[0]/100
             self._dbusservice['/Yield/Power'] =round((c3100[2] | c3100[3] << 8)/100)
             self._dbusservice['/Load/I'] = c3100[13]/100
+
+            # Victron State 0=Off 2=Fault 3=Bulk 4=Absorption 5=Float 6=Storage 7=Equalize 252=External control
+            # Epever State  00 No charging, 01 Float charging, 02 Boost charging, 03 Equalizing charging
             self._dbusservice['/State'] = state[getBit(c3200[1],3)* 2 + getBit(c3200[1],2)]
             self._dbusservice['/Load/State'] = c3200[2]
             self._dbusservice['/Yield/User'] =(c3300[18] | c3300[19] << 8)/100
+            self._dbusservice['/Yield/System'] =(c3300[18] | c3300[19] << 8)/100
             self._dbusservice['/History/Daily/0/Yield'] =(c3300[12] | c3300[13] << 8)/100
             
             if self._dbusservice['/Yield/Power'] > self._dbusservice['/History/Daily/0/MaxPower']:
