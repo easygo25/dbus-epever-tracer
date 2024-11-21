@@ -12,7 +12,7 @@ The provided install.sh script will copy files download dependencies and should 
 2. from root login on the venus root home directory
 3. run
 ```
-wget https://github.com/kassl-2007/dbus-epever-tracer/raw/master/install.sh
+wget https://github.com/easygo25/dbus-epever-tracer/raw/master/install.sh
 ```
 4. run 
 ```
@@ -28,14 +28,6 @@ chmod +x install.sh
 8. connect the RS485 adapter to your Venus / Raspberry Pi now.
 ### Hardware connection
 
-Ad the moment the original cabel from the Epever doesn´t work, because the driver do not work on my Raspberry pi.
+Use this adapter:
 
-So I make my own cabel and used this adapter:
-
-https://amzn.eu/d/56BrzXs
-
-If you want to use an other adapter you have to make shure that the service startet with your adapter.
-
-For this see:
-
-https://github.com/victronenergy/venus/wiki/howto-add-a-driver-to-Venus#howto-add-a-driver-to-serial-starter
+https://www.amazon.de/gp/product/B082D5PXJ4/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
